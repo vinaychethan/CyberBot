@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CyberBot Chat</title>
+</head>
+<body>
+    <h1>Welcome to CyberBot Chat</h1>
+    <div id="chat-container">
+        <!-- Chat messages will appear here -->
+    </div>
+    <input type="text" id="user-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        function addMessage(message, isUser) {
+            const chatContainer = document.getElementById('chat-container');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message' : 'bot-message';
+            messageDiv.textContent = message;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userMessage = document.getElementById('user-input').value;
+            addMessage(userMessage, true);
+
+            fetch('/get_bot_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_input: userMessage }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    const botResponse = data.bot_response;
+                    addMessage(botResponse, false);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
