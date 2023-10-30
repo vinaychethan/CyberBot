@@ -85,7 +85,6 @@ def load_conversation(filename):
 # cyberbot.py
 def cyberbot(user_input):
     global previous_question
-# ... (previous code)
 
 def cyberbot_response(user_input):
     # Tokenize user input
@@ -101,7 +100,7 @@ def cyberbot_response(user_input):
         return responses["malware"]
 
     # Add more conditions for other keywords and responses...
-    
+
     elif "protect online accounts" in user_input.lower():
         return responses["protect online accounts"]
 
@@ -248,15 +247,27 @@ def cyberbot_response(user_input):
 
     else:
         return "I'm not quite sure what you mean. Could you please provide more details or rephrase your question?"
+# Define a function to get a response
+def get_response(user_input):
+    user_input = user_input.lower()
+
+    for keyword, response in responses.items():
+        if keyword in user_input:
+            return response
+
+    return "I'm not quite sure what you mean. Could you please provide more details or rephrase your question?"
 # Main loop for user interaction
-print("Welcome to CyberBot! I can provide information on cyber frauds and online security. Feel free to ask your questions, and I can also handle voice input or provide links to articles and videos related to cyber frauds.")
-conversation_ended = False
-while not conversation_ended:
+print("Welcome to CyberBot! I can provide information on cyber frauds and online security.")
+conversation_history = []
+
+while True:
     user_input = input("You: ")
-    response = cyberbot(user_input)
+    if user_input.lower() == "goodbye":
+        break
+
+    response = get_response(user_input)
     print("CyberBot:", response)
 
-    # Store the conversation in the history
     conversation_history.append({"user": user_input, "bot": response})
 
     if "save" in word_tokenize(user_input.lower()):
@@ -276,13 +287,12 @@ while not conversation_ended:
         conversation_ended = True
 
 # Request feedback at the end of the conversation
-if conversation_ended:
-    rating = input("Rate this conversation: 1-5: ")
-    try:
-        rating = int(rating)
-        if 1 <= rating <= 5:
-            print("Thank you for your feedback!")
-        else:
-            print("Invalid rating. Please provide a rating between 1 and 5.")
-    except ValueError:
-        print("Invalid rating. Please provide a numeric rating between 1 and 5.")
+rating = input("Rate this conversation: 1-5: ")
+try:
+    rating = int(rating)
+    if 1 <= rating <= 5:
+        print("Thank you for your feedback!")
+    else:
+        print("Invalid rating. Please provide a rating between 1 and 5.")
+except ValueError:
+    print("Invalid rating. Please provide a numeric rating between 1 and 5.")
